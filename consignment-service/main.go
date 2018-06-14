@@ -1,8 +1,7 @@
 package main
 
 import (
-	"fmt"
-
+	"log"
 	"os"
 
 	pb "github.com/DesmondANIMUS/shipper/consignment-service/proto/consignment"
@@ -37,6 +36,6 @@ func main() {
 	pb.RegisterShippingServiceHandler(srv.Server(), &handler{vesselClient})
 
 	if err := srv.Run(); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 }
