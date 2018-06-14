@@ -12,7 +12,7 @@ func (s *service) FindAvailable(ctx context.Context, req *pb.Specification, res 
 	session := Session.Clone()
 	defer session.Close()
 
-	vessel, err := FindVessel(session)
+	vessel, err := FindVessel(req, session)
 	if err != nil {
 		return err
 	}

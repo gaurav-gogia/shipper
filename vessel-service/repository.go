@@ -3,12 +3,19 @@ package main
 import (
 	pb "github.com/DesmondANIMUS/shipper/vessel-service/proto/vessel"
 	mgo "gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
-func FindVessel(session *mgo.Session) (*pb.Vessel, error) {
+func FindVessel(spec *pb.Specification, session *mgo.Session) (*pb.Vessel, error) {
 	var vessel *pb.Vessel
 	c := session.DB(dbName).C(vesselCollection)
-	c.Find(nil).One(&vessel)
+
+	query := bson.M{
+		"capacity":  bson.M{"$gte": spec.Capacity},
+		"maxweight": bson.M{"$gte": spec.MaxWeight},
+	}
+
+	c.Find(query).One(&vessel)
 	return vessel, nil
 }
 
