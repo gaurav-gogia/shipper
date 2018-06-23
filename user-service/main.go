@@ -13,14 +13,23 @@ const (
 )
 
 func main() {
-	var repo Repository
+	db, err := CreateConnection()
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+	db.AutoMigrate(&pb.User{})
+
+	repo := UserRepository{db}
+	tokenService := TokenService{&repo}
+
 	srv := micro.NewService(
 		micro.Name(sname),
 		micro.Version(version),
 	)
 
 	srv.Init()
-	pb.RegisterUserServiceHandler(srv.Server(), &service{repo})
+	pb.RegisterUserServiceHandler(srv.Server(), &service{&repo, &tokenService})
 
 	if err := srv.Run(); err != nil {
 		log.Println(err)
